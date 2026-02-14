@@ -1,0 +1,46 @@
+#######DEPLOYMENT.YAML#########
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insighthub
+  namespace: default
+  labels:
+    app: insighthub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insighthub
+  template:
+    metadata:
+      labels:
+        app: insighthub
+    spec:
+      containers:
+      - name: insighthub
+        image: lloyd03/insighthub:latest
+        ports:
+        - containerPort: 5000
+
+
+---
+
+
+##########SERVICE.YAML#########
+apiVersion: v1
+kind: Service
+metadata:
+  name: insighthub-service
+  namespace: default
+  labels:
+    app: insighthub
+    release: prometheus
+spec:
+  selector:
+    app: insighthub
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: ClusterIP
